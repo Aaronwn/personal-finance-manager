@@ -40,12 +40,18 @@
         <p class="text-gray-600 text-lg">查看您的财务概览和趋势</p>
       </router-link>
     </div>
+
+    <!-- 添加数据管理组件 -->
+    <div class="mt-12">
+      <DataManagement />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { useFinanceStore } from '../stores/finance'
+import DataManagement from '../components/DataManagement.vue'
 
 const financeStore = useFinanceStore()
 const { totalIncome, totalExpense, balance } = storeToRefs(financeStore)
