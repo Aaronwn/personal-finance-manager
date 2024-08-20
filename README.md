@@ -4,6 +4,10 @@
 
 个人财务管理系统是一个基于 Vue 3 和 TypeScript 开发的单页面应用(SPA),旨在帮助用户轻松管理个人财务。该应用提供了直观的界面,用于记录收支、设置预算、生成财务报表,帮助用户更好地了解和控制自己的财务状况。
 
+## 项目链接
+
+[在线演示](https://personal-finance-manager-nm7drpsu9-aaronwns-projects.vercel.app/)
+
 ![首页](https://ice.frostsky.com/2024/08/20/f54a169132300ef2c87109ebec3e9402.png)
 
 ![交易](https://ice.frostsky.com/2024/08/20/b5d91ba0f172bbf55e4e919ca1bc1741.png)

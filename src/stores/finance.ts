@@ -74,7 +74,7 @@ export const useFinanceStore = defineStore('finance', {
 
             resolve('数据导入成功')
           } catch (error) {
-            reject('导入数据失败: ' + error.message)
+            reject('导入数据失败: ' + (error as Error).message)
           }
         }
         reader.readAsArrayBuffer(file)

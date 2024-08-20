@@ -22,7 +22,7 @@
       </div>
 
       <div class="bg-white shadow-md rounded-lg p-6">
-        <h2 class="text-2xl font-semibold mb-4">收支比例</h2>
+        <h2 class="text-2xl font-semibold mb-4"></h2>
         <div class="h-64 lg:h-80">
           <Pie :data="incomeExpenseData" :options="chartOptions" />
         </div>
@@ -51,6 +51,7 @@ import { storeToRefs } from 'pinia'
 import { useFinanceStore } from '../stores/finance'
 import { Pie, Line, Bar } from 'vue-chartjs'
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, BarElement } from 'chart.js'
+import { ChartData } from 'chart.js';
 
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, BarElement)
 
@@ -60,7 +61,7 @@ const { totalIncome, totalExpense, balance } = storeToRefs(financeStore)
 const isLoading = ref(true)
 
 onMounted(() => {
-  // 模拟数据加载
+  // 模拟数加载
   setTimeout(() => {
     isLoading.value = false
   }, 500)
@@ -80,7 +81,11 @@ const incomeExpenseData = computed(() => ({
   }]
 }))
 
-// 月��收支趋势数据
+interface MonthlyData {
+  [key: string]: { income: number; expense: number };
+}
+
+// 月收支趋势数据
 const monthlyTrendData = computed(() => {
   let monthlyData = getMonthlyData()
 
@@ -115,21 +120,24 @@ const monthlyTrendData = computed(() => {
   }
 })
 
+// 定义 CategoryTotals 类型
+type CategoryTotals = { [category: string]: number };
+
 // 类别统计数据
-const categoryData = computed(() => {
-  const categoryTotals = getCategoryTotals()
+const categoryData = computed<ChartData<'bar'>>(() => {
+  const categoryTotals = getCategoryTotals();
   return {
     labels: Object.keys(categoryTotals),
     datasets: [{
       label: '支出金额',
       data: Object.values(categoryTotals),
-      backgroundColor: '#60A5FA'
+      backgroundColor: 'rgba(75, 192, 192, 0.6)',
     }]
   }
 })
 
-function getMonthlyData() {
-  const monthlyData = {}
+function getMonthlyData(): { month: string; income: number; expense: number }[] {
+  const monthlyData: MonthlyData = {}
   financeStore.transactions.forEach(transaction => {
     const date = new Date(transaction.date)
     const monthKey = `${date.getFullYear()}-${date.getMonth() + 1}`
@@ -146,22 +154,22 @@ function getMonthlyData() {
   return Object.entries(monthlyData)
     .map(([key, value]) => ({
       month: key,
-      income: value.income,
-      expense: value.expense
+      income: (value as { income: number }).income,
+      expense: (value as { expense: number }).expense
     }))
     .sort((a, b) => a.month.localeCompare(b.month))
 }
 
-function getCategoryTotals() {
-  const categoryTotals = {}
+function getCategoryTotals(): CategoryTotals {
+  const categoryTotals: CategoryTotals = {};
   financeStore.transactions.forEach(transaction => {
     if (transaction.type === 'expense') {  // 只统计支出类别
       if (!categoryTotals[transaction.category]) {
-        categoryTotals[transaction.category] = 0
+        categoryTotals[transaction.category] = 0;
       }
-      categoryTotals[transaction.category] += transaction.amount
+      categoryTotals[transaction.category] += transaction.amount;
     }
-  })
-  return categoryTotals
+  });
+  return categoryTotals;
 }
 </script>
